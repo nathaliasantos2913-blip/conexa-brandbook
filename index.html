@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conexa · Brandbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Krub";src:url("assets/Krub-Regular.ttf") format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"Krub";src:url("assets/Krub-SemiBold.ttf") format("truetype");font-weight:600;font-display:swap}
+:root{--laranja:#ff7800;--branco:#fcfcfc;--preto:#0c0c0c;--bg:#0c0c0c;--fg:#fcfcfc;--muted:rgba(252,252,252,.55);--line:rgba(252,252,252,.12);--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Krub",system-ui,sans-serif;background:var(--bg);color:var(--fg);transition:background .8s ease,color .8s ease;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.light{--bg:#fcfcfc;--fg:#0c0c0c;--muted:rgba(12,12,12,.55);--line:rgba(12,12,12,.12)}
+body.orange{--bg:#ff7800;--fg:#0c0c0c;--muted:rgba(12,12,12,.65);--line:rgba(12,12,12,.2)}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+img{display:block;max-width:100%}
+
+/* loader */
+#loader{position:fixed;inset:0;z-index:100;background:var(--preto);display:grid;place-items:center;transition:opacity .7s ease,visibility .7s}
+#loader.done{opacity:0;visibility:hidden}
+#loader .count{font-family:var(--mono);font-size:13px;color:var(--branco);letter-spacing:.1em}
+#loader .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--laranja);width:0}
+
+/* top bar */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:20px 28px;mix-blend-mode:difference;color:#fff;pointer-events:none}
+header *{pointer-events:auto}
+header .pill{border:1px solid rgba(255,255,255,.5);border-radius:99px;padding:8px 16px;color:#fff;text-decoration:none;background:none;cursor:pointer;font:inherit}
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--laranja);z-index:60;width:0}
+
+/* hero */
+#hero{height:320vh;position:relative}
+#hero .stage{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:center}
+.behind{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(90px,16vw,250px);z-index:1;pointer-events:none}
+.behind .row{font-weight:600;font-size:clamp(56px,12vw,210px);line-height:.86;letter-spacing:-.04em;white-space:nowrap;color:var(--laranja);text-transform:uppercase;will-change:transform,opacity}
+.behind .row.o{color:transparent;-webkit-text-stroke:1.5px rgba(255,120,0,.75)}
+.logo-wrap{position:relative;z-index:2;width:min(70vw,760px);will-change:transform}
+.logo-wrap .glow{position:absolute;inset:-30%;background:radial-gradient(closest-side,rgba(255,120,0,.35),transparent 70%);filter:blur(20px);opacity:0;transition:opacity 2s ease}
+.revealed .logo-wrap .glow{opacity:1}
+svg.logo{width:100%;height:auto;color:var(--branco);overflow:visible;position:relative}
+svg.logo .sym{transform-box:fill-box;transform-origin:50% 50%;transform:scale(.2) rotate(-90deg);opacity:0;transition:transform 1.4s cubic-bezier(.2,.9,.2,1.15),opacity .6s ease}
+svg.logo .ltr{transform-box:fill-box;transform:translateY(60%);opacity:0;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .6s ease;transition-delay:calc(.55s + var(--i)*.08s)}
+.revealed svg.logo .sym{transform:none;opacity:1}
+.revealed svg.logo .ltr{transform:none;opacity:1}
+.hero-foot{position:absolute;left:0;right:0;bottom:28px;display:flex;justify-content:space-between;padding:0 28px;z-index:3;color:var(--muted);opacity:0;transition:opacity 1s ease 1.6s}
+.revealed .hero-foot{opacity:1}
+.scrollhint{display:flex;gap:10px;align-items:center}
+.scrollhint i{width:1px;height:28px;background:var(--muted);display:block;animation:hint 1.8s ease-in-out infinite;transform-origin:top}
+@keyframes hint{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(0);transform-origin:bottom}}
+.tagline{position:absolute;bottom:14vh;z-index:3;text-align:center;font-size:clamp(16px,1.6vw,22px);color:var(--fg);opacity:0}
+
+/* sections */
+section{position:relative;padding:18vh 7vw}
+.wrap{max-width:1240px;margin:0 auto}
+.kicker{color:var(--laranja);margin-bottom:28px;display:flex;gap:14px;align-items:center}
+body.orange .kicker{color:var(--preto)}
+.kicker::before{content:"";width:28px;height:1px;background:currentColor}
+h2{font-weight:600;font-size:clamp(40px,6vw,96px);line-height:.95;letter-spacing:-.035em}
+h3{font-weight:600;font-size:clamp(24px,2.4vw,34px);letter-spacing:-.02em;line-height:1.1}
+p.lead{font-size:clamp(19px,1.7vw,24px);line-height:1.5;color:var(--muted);max-width:720px;margin-top:28px}
+em.o{font-style:normal;color:var(--laranja)}
+body.orange em.o{color:var(--branco)}
+
+/* manifesto word light-up */
+#manifesto{min-height:100vh;display:flex;align-items:center}
+#manifesto p{font-weight:600;font-size:clamp(30px,4.4vw,68px);line-height:1.08;letter-spacing:-.03em;max-width:1200px}
+#manifesto .w{opacity:.14;transition:opacity .25s linear,color .25s}
+#manifesto .w.on{opacity:1}
+#manifesto .w.hl.on{color:var(--laranja)}
+
+/* chapter cover */
+.chapter{height:100vh;padding:0;display:grid;place-items:center;overflow:hidden}
+.chapter .num{position:absolute;top:28px;left:28px}
+.chapter .big{font-weight:600;font-size:clamp(70px,17vw,300px);line-height:.85;letter-spacing:-.05em;text-transform:uppercase;text-align:center;transform:scaleX(var(--sx,1.6));transform-origin:center;transition:transform .1s linear}
+.chapter .sub{position:absolute;bottom:28px;left:28px;right:28px;display:flex;justify-content:space-between;color:var(--muted)}
+
+/* toc */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:60px}
+.toc a{background:var(--bg);padding:28px;min-height:190px;display:flex;flex-direction:column;justify-content:space-between;color:var(--fg);text-decoration:none;transition:background .3s,color .3s}
+.toc a:hover{background:var(--laranja);color:var(--preto)}
+.toc a span.mono{opacity:.6}
+.toc a h3{font-size:24px}
+.toc a.soon{pointer-events:none}
+.toc a.soon h3{opacity:.4}
+
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(40px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* stats floating cards */
+.stats{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:70px}
+.card{background:#171717;border:1px solid var(--line);border-radius:24px;padding:26px;position:relative;overflow:hidden}
+body.light .card{background:#fff}
+.card .n{font-weight:600;font-size:clamp(48px,5.5vw,88px);line-height:1;letter-spacing:-.04em;color:var(--laranja)}
+.card p{color:var(--muted);margin-top:14px;line-height:1.45;font-size:16px}
+.c1{grid-column:span 5}.c2{grid-column:span 4}.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 4}.c6{grid-column:span 4}
+.card.dark{background:var(--laranja);border:none}.card.dark .n,.card.dark p{color:var(--preto)}
+.dots{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:20px;max-width:220px}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--line);display:block}
+.dots i.me{background:var(--laranja)}
+
+/* positioning statement */
+.statement{font-size:clamp(22px,2.3vw,34px);line-height:1.35;font-weight:400;max-width:1050px;margin-top:50px}
+.statement b{font-weight:600;color:var(--laranja)}
+body.light .statement b{color:var(--laranja)}
+.statement .k{font-family:var(--mono);font-size:.42em;letter-spacing:.1em;vertical-align:middle;border:1px solid var(--line);border-radius:99px;padding:4px 10px;margin-right:6px;color:var(--muted)}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:70px}
+.pillars .card h3{margin:18px 0 8px}
+.pillars .card .mono{color:var(--laranja)}
+
+/* purpose */
+#proposito{min-height:110vh;display:flex;align-items:center}
+.purpose{font-weight:600;font-size:clamp(34px,5.2vw,84px);line-height:1.02;letter-spacing:-.035em;max-width:1200px}
+.purpose span{display:inline-block;opacity:0;transform:translateY(.4em);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
+.in .purpose span{opacity:1;transform:none}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:0;margin-top:70px;align-items:stretch}
+.chain .step{flex:1 1 170px;padding:24px 22px;border-top:2px solid var(--line);position:relative;transition:border-color .6s}
+.chain .step.in{border-color:var(--laranja)}
+.chain .step .mono{color:var(--muted)}
+.chain .step h3{font-size:21px;margin-top:12px}
+.chain .step p{color:var(--muted);font-size:15px;margin-top:8px;line-height:1.45}
+.chain .step.hot h3{color:var(--laranja)}
+
+/* nexa hero */
+#nexa{min-height:100vh;overflow:hidden}
+.nexa-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.nexa-stage{position:relative;aspect-ratio:1;display:grid;place-items:center}
+.nexa-stage .orbit{position:absolute;inset:4%;border:1px dashed var(--line);border-radius:50%;animation:spin 40s linear infinite}
+.nexa-stage .orbit.b{inset:18%;animation-duration:26s;animation-direction:reverse}
+.nexa-stage .orbit i{position:absolute;top:-5px;left:50%;width:10px;height:10px;border-radius:50%;background:var(--laranja)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nexa-stage img{width:68%;position:relative;filter:drop-shadow(0 30px 40px rgba(0,0,0,.35));animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-14px) rotate(-2deg)}}
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px}
+.matrix div{border:1px solid var(--line);border-radius:18px;padding:18px;font-size:15px;color:var(--muted);line-height:1.4}
+.matrix div b{display:block;color:var(--fg);font-weight:600;margin-bottom:4px}
+.matrix div.win{background:var(--preto);color:rgba(252,252,252,.7);border-color:var(--preto)}
+.matrix div.win b{color:var(--laranja)}
+
+/* bento gallery */
+.bento{display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:130px;grid-auto-flow:dense;gap:14px;margin-top:60px}
+.bento figure{background:#171717;border-radius:22px;position:relative;overflow:hidden;display:grid;place-items:center;cursor:pointer;transition:transform .4s cubic-bezier(.2,.8,.2,1),background .4s}
+body.light .bento figure{background:#efefef}
+.bento figure:hover{transform:translateY(-6px) rotate(-1deg);background:var(--laranja)}
+.bento figure img{position:absolute;inset:9% 9% 16%;width:82%;height:75%;object-fit:contain;transition:transform .5s cubic-bezier(.2,.8,.2,1.3)}
+.bento figure:hover img{transform:scale(1.08)}
+.bento figcaption{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bento figure:hover figcaption{color:var(--preto)}
+.bento .w2{grid-column:span 2}.bento .h2{grid-row:span 2}
+
+/* rules */
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:60px}
+.rules .card h3{display:flex;gap:10px;align-items:center;font-size:22px}
+.rules ul{list-style:none;margin-top:18px}
+.rules li{padding:12px 0;border-top:1px solid var(--line);color:var(--muted);line-height:1.45}
+
+/* companion */
+#companion{position:fixed;right:22px;bottom:18px;z-index:40;width:118px;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1.3);pointer-events:none}
+#companion.on{opacity:1;transform:none;pointer-events:auto}
+#companion img{width:100%;transition:transform .35s cubic-bezier(.2,.8,.2,1.4)}
+#companion img.swap{transform:scale(.6) rotate(-12deg)}
+#companion .bubble{position:absolute;right:100%;bottom:62%;margin-right:4px;background:var(--branco);color:var(--preto);border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:13px;line-height:1.35;width:max-content;max-width:220px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transform:scale(.8);transform-origin:bottom right;transition:opacity .3s,transform .3s}
+#companion.talk .bubble{opacity:1;transform:none}
+
+footer{padding:14vh 7vw 40px;border-top:1px solid var(--line)}
+footer .end{font-weight:600;font-size:clamp(40px,7vw,120px);letter-spacing:-.04em;line-height:.95}
+
+@media (max-width:820px){
+  .nexa-grid,.rules{grid-template-columns:1fr}
+  .stats>*{grid-column:span 12!important}
+  .bento{grid-template-columns:repeat(4,1fr)}
+  .bento .w2{grid-column:span 2}
+  #companion{width:84px}
+  .behind .row{font-size:15vw}
+}
+.diff{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px}
+.drow{border:1px solid var(--line);border-radius:22px;padding:24px}
+.drow .mono{color:var(--muted)}.drow h3{font-size:22px;margin:14px 0 8px}.drow p{color:var(--muted);line-height:1.45}
+.drow.strong{background:var(--laranja);border:none;color:var(--preto)}.drow.strong .mono,.drow.strong p{color:rgba(12,12,12,.75)}
+.drow.floor{border-style:dashed;opacity:.7}
+.ladder{margin-top:60px;border-top:1px solid var(--line)}
+.lrow{display:grid;grid-template-columns:180px 200px 1fr;gap:6px 24px;padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.lrow b{font-weight:600;font-size:24px}.lrow .mono{color:var(--muted)}.lrow p{font-size:20px}.lrow small{grid-column:3;color:var(--muted);font-size:14px}
+.lrow.me{background:var(--laranja);color:var(--preto);padding:26px 22px;border-radius:20px;border:none;margin-top:14px}.lrow.me .mono,.lrow.me small{color:rgba(12,12,12,.7)}
+.aud{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:60px}
+.aud .card .mono{color:var(--laranja)}.aud .card.dark .mono{color:var(--preto)}.aud h3{margin:14px 0 6px}
+.aud ul{list-style:none}.aud li{padding:10px 0;border-top:1px solid var(--line);color:var(--muted);line-height:1.4;font-size:15px}
+.aud .card.dark h3,.aud .card.dark li{color:var(--preto)}
+.swap{display:grid;grid-template-columns:1fr auto 1fr;gap:10px 14px;margin-top:36px;align-items:center}
+.swap div{border:1px solid var(--line);border-radius:14px;padding:12px 14px}.swap div .mono{font-size:10px;color:var(--muted)}.swap div p{margin-top:4px}
+.swap div:nth-child(3n){border-color:var(--laranja)}.swap i{font-style:normal;color:var(--laranja);font-size:22px}
+.senses{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:60px}
+.sense{background:var(--preto);color:var(--branco);border-radius:22px;padding:24px;min-height:300px;display:flex;flex-direction:column;transition:transform .4s cubic-bezier(.2,.8,.2,1.3)}
+.sense:hover{transform:translateY(-10px) rotate(-1.5deg)}
+.sense .mono{color:var(--laranja)}.sense h3{margin:auto 0 10px;font-size:22px}.sense p{color:rgba(252,252,252,.65);line-height:1.45;font-size:15px}
+.space{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:60px}
+.space .card .mono{color:var(--laranja);font-size:22px}.space h3{margin:40px 0 8px;font-size:22px}
+@media (max-width:980px){.diff,.aud,.space{grid-template-columns:1fr 1fr}.senses{grid-template-columns:1fr 1fr}.lrow{grid-template-columns:1fr}.lrow small{grid-column:1}}
+.logos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:60px}
+.logos figure{border-radius:22px;overflow:hidden;border:1px solid var(--line);position:relative}
+.logos figure.lg-main{grid-column:span 3}
+.logos img{width:100%}
+.logos figcaption{position:absolute;left:16px;bottom:12px;color:#888}
+.palette{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:14px;margin-top:50px}
+.sw{all:unset;cursor:pointer;border-radius:24px;padding:26px;min-height:300px;display:flex;flex-direction:column;position:relative;transition:transform .35s cubic-bezier(.2,.8,.2,1.3)}
+.sw:hover{transform:translateY(-8px)}
+.sw b{font-weight:600;font-size:clamp(26px,2.4vw,36px);margin-top:auto;letter-spacing:-.02em}
+.sw .codes{margin-top:12px;line-height:1.7;opacity:.8}
+.sw .cp{position:absolute;top:24px;right:24px;font-style:normal;opacity:.6}
+.grad{height:110px;border-radius:24px;margin-top:14px;background:linear-gradient(90deg,#f0422c,#ff7800 55%,#ffb000);display:flex;align-items:flex-end;padding:18px 24px;color:#0c0c0c}
+.type{display:grid;grid-template-columns:.8fr 1.2fr;gap:50px;align-items:start}
+.aa{font-weight:600;font-size:clamp(150px,20vw,320px);line-height:.8;letter-spacing:-.05em}
+.tw{border-top:1px solid var(--line);padding:22px 0}.tw .mono{display:block;margin-bottom:10px;opacity:.7}
+@media (max-width:820px){.logos,.palette,.type{grid-template-columns:1fr}.logos figure.lg-main{grid-column:auto}}
+@media (max-width:560px){
+  section{padding:12vh 6vw}
+  header{padding:14px 16px}
+  header .mono{font-size:10px}
+  .hero-foot{padding:0 16px;font-size:9px}.hero-foot span:first-child,.hero-foot span:last-child{display:none}.hero-foot{justify-content:center}
+  .logo-wrap{width:84vw}
+  .behind{gap:34vw}
+  .behind .row{font-size:11.2vw;letter-spacing:-.03em}
+  .tagline{padding:0 24px;bottom:16vh}
+  h2{font-size:clamp(34px,10vw,48px)}
+  p.lead{font-size:17px}
+  #manifesto p{font-size:28px}
+  .toc{grid-template-columns:1fr 1fr}.toc a{min-height:130px;padding:18px}.toc a h3{font-size:18px}
+  .chapter .num{top:70px;left:18px}.chapter .sub{flex-direction:column;gap:6px;left:18px;right:18px;font-size:10px}
+  .card{padding:20px;border-radius:18px}
+  .stats{gap:12px;margin-top:40px}
+  .pillars,.diff,.aud,.space,.senses,.logos,.palette,.type{grid-template-columns:1fr;gap:12px}
+  .sense{min-height:auto}.sense h3{margin-top:30px}
+  .space h3{margin-top:20px}
+  .sw{min-height:180px}
+  .aa{font-size:150px}
+  .statement{font-size:19px}
+  .lrow{padding:18px 0}.lrow b{font-size:21px}.lrow p{font-size:17px}
+  .lrow.me{padding:20px 16px}
+  .bento{grid-template-columns:repeat(3,1fr);grid-auto-rows:104px;gap:8px}
+  .bento .w2{grid-column:span 1}.bento .h2{grid-row:span 1}
+  .bento figcaption{font-size:8px;left:8px;bottom:6px}
+  .stats.mini{grid-template-columns:repeat(3,1fr)}.stats.mini>*{grid-column:span 1!important}
+  .stats.mini .card{padding:12px}.stats.mini .n{font-size:24px}.stats.mini p{font-size:11px;text-align:left}.stats.mini .dots{display:none}
+  .swap{grid-template-columns:1fr auto 1fr;font-size:14px}
+  .chain .step{flex:1 1 45%}
+  .matrix{grid-template-columns:1fr}
+  .nexa-stage{max-width:340px;margin:0 auto}
+  #companion{width:70px;right:10px;bottom:10px}
+  #companion .bubble{max-width:170px;font-size:12px}
+  footer{padding:10vh 6vw 30px}
+  .card p,.drow p,.sense p,.aud li,.space p{text-align:left;hyphens:manual}
+  .logo-wrap .glow{inset:-10%}
+  #nexa,#ativacao{overflow:hidden}
+}
+section,footer{background:var(--bg);color:var(--fg)}
+section[data-theme=light]{--bg:#fcfcfc;--fg:#0c0c0c;--muted:rgba(12,12,12,.6);--line:rgba(12,12,12,.14)}
+section[data-theme=orange]{--bg:#ff7800;--fg:#0c0c0c;--muted:rgba(12,12,12,.7);--line:rgba(12,12,12,.2)}
+section[data-theme=orange] em.o{color:#fcfcfc}section[data-theme=orange] .kicker{color:#0c0c0c}
+section[data-theme=light] .card{background:#fff}section[data-theme=light] .bento figure{background:#efefef}
+p.lead,.card p,.drow p,.sense p,.statement,.space p,.pillars p,#manifesto p,.aud li,.matrix div,footer p.mono{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.stats.mini .card{padding:20px}.stats.mini .n{font-size:clamp(34px,3.4vw,52px)}
+.play{display:inline-flex;align-items:center;gap:12px;margin-top:30px;background:var(--laranja);color:var(--preto);text-decoration:none;font-weight:600;font-size:18px;padding:16px 26px;border-radius:99px;transition:transform .3s cubic-bezier(.2,.8,.2,1.4),box-shadow .3s}
+.play:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 30px rgba(255,120,0,.35)}
+.play span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--preto);color:var(--laranja);font-size:11px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="loader"><span class="count" id="count">000%</span><div class="bar" id="bar"></div></div>
+<div id="progress"></div>
+<header><span class="mono">Conexa · Brandbook 2026</span><a class="pill mono" href="#sumario">Sumário</a></header>
+
+<!-- HERO -->
+<section id="hero" style="padding:0">
+  <div class="stage">
+    <div class="behind" aria-hidden="true">
+      <div class="row o" data-r="0">A Especialista</div>
+      <div class="row" data-r="1">em Recorrência</div>
+    </div>
+    <div class="logo-wrap"><div class="glow"></div><svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1080" height="423" viewBox="0 0 1080 423">
+<defs>
+<clipPath id="clip-0">
+<path clip-rule="nonzero" d="M 59 96 L 244 96 L 244 327 L 59 327 Z M 59 96 "/>
+</clipPath>
+<clipPath id="clip-1">
+<path clip-rule="nonzero" d="M 184.914062 116.894531 C 182.28125 124.929688 176.113281 143.285156 161.761719 157.851562 L 157.671875 161.902344 C 141.710938 177.710938 120.886719 187.457031 98.574219 190.816406 C 84.15625 192.984375 75.0625 200.167969 68.722656 207.835938 C 63.308594 214.382812 59.28125 223.726562 59.1875 234.84375 C 59.066406 249.910156 66.175781 263.796875 79.660156 272.640625 C 91.144531 280.171875 105.054688 281.40625 116.398438 278.089844 C 130.273438 274.035156 144.347656 275.957031 156.761719 283.3125 L 159.683594 285.042969 C 169.953125 291.125 176.691406 300.980469 181.933594 311.636719 C 185.886719 319.671875 195.132812 326.980469 207.972656 326.980469 C 222.492188 326.980469 237.46875 315.714844 237.46875 297.765625 C 237.46875 284.953125 227.667969 268.988281 208.921875 268.570312 C 197.320312 268.3125 184.460938 267.917969 174.5 262.019531 L 170.917969 259.898438 C 170.820312 259.839844 170.71875 259.78125 170.617188 259.722656 C 154.378906 249.949219 148.523438 229.109375 155.992188 211.800781 C 160.601562 201.105469 166.988281 191.265625 175.441406 182.894531 L 180.203125 178.179688 C 192.175781 166.320312 215.609375 157.449219 225.480469 153.5625 C 233.929688 150.234375 243.953125 140.546875 243.953125 125.960938 C 243.953125 108.050781 228.800781 96.019531 213.726562 96.019531 C 196.242188 96.019531 187.65625 108.515625 184.914062 116.894531 "/>
+</clipPath>
+<linearGradient id="linear-pattern-0" gradientUnits="userSpaceOnUse" x1="-0.000658888" y1="0" x2="1" y2="0" gradientTransform="matrix(184.766281, 0, 0, 184.766281, 59.18774, 211.5)">
+<stop offset="0" stop-color="rgb(100%, 30.195618%, 21.568298%)" stop-opacity="1"/>
+<stop offset="0.0078125" stop-color="rgb(100%, 30.195618%, 21.568298%)" stop-opacity="1"/>
+<stop offset="0.015625" stop-color="rgb(100%, 30.587769%, 21.176147%)" stop-opacity="1"/>
+<stop offset="0.0234375" stop-color="rgb(100%, 30.979919%, 21.176147%)" stop-opacity="1"/>
+<stop offset="0.03125" stop-color="rgb(100%, 31.37207%, 21.176147%)" stop-opacity="1"/>
+<stop offset="0.0390625" stop-color="rgb(100%, 31.37207%, 20.783997%)" stop-opacity="1"/>
+<stop offset="0.046875" stop-color="rgb(100%, 31.764221%, 20.783997%)" stop-opacity="1"/>
+<stop offset="0.0546875" stop-color="rgb(100%, 32.156372%, 20.391846%)" stop-opacity="1"/>
+<stop offset="0.0625" stop-color="rgb(100%, 32.548523%, 20.391846%)" stop-opacity="1"/>
+<stop offset="0.0703125" stop-color="rgb(100%, 32.548523%, 19.999695%)" stop-opacity="1"/>
+<stop offset="0.078125" stop-color="rgb(100%, 32.940674%, 19.999695%)" stop-opacity="1"/>
+<stop offset="0.0859375" stop-color="rgb(100%, 33.332825%, 19.999695%)" stop-opacity="1"/>
+<stop offset="0.09375" stop-color="rgb(100%, 33.332825%, 19.607544%)" stop-opacity="1"/>
+<stop offset="0.101562" stop-color="rgb(100%, 33.724976%, 19.607544%)" stop-opacity="1"/>
+<stop offset="0.109375" stop-color="rgb(100%, 34.117126%, 19.215393%)" stop-opacity="1"/>
+<stop offset="0.117187" stop-color="rgb(100%, 34.509277%, 19.215393%)" stop-opacity="1"/>
+<stop offset="0.125" stop-color="rgb(100%, 34.509277%, 18.823242%)" stop-opacity="1"/>
+<stop offset="0.132812" stop-color="rgb(100%, 34.901428%, 18.823242%)" stop-opacity="1"/>
+<stop offset="0.140625" stop-color="rgb(100%, 35.293579%, 18.823242%)" stop-opacity="1"/>
+<stop offset="0.148438" stop-color="rgb(100%, 35.68573%, 18.431091%)" stop-opacity="1"/>
+<stop offset="0.15625" stop-color="rgb(100%, 35.68573%, 18.431091%)" stop-opacity="1"/>
+<stop offset="0.164062" stop-color="rgb(100%, 36.077881%, 18.03894%)" stop-opacity="1"/>
+<stop offset="0.171875" stop-color="rgb(100%, 36.470032%, 18.03894%)" stop-opacity="1"/>
+<stop offset="0.179687" stop-color="rgb(100%, 36.862183%, 17.64679%)" stop-opacity="1"/>
+<stop offset="0.1875" stop-color="rgb(100%, 36.862183%, 17.64679%)" stop-opacity="1"/>
+<stop offset="0.195312" stop-color="rgb(100%, 37.254333%, 17.254639%)" stop-opacity="1"/>
+<stop offset="0.203125" stop-color="rgb(100%, 37.646484%, 17.254639%)" stop-opacity="1"/>
+<stop offset="0.210937" stop-color="rgb(100%, 38.038635%, 17.254639%)" stop-opacity="1"/>
+<stop offset="0.21875" stop-color="rgb(100%, 38.038635%, 16.862488%)" stop-opacity="1"/>
+<stop offset="0.226562" stop-color="rgb(100%, 38.430786%, 16.862488%)" stop-opacity="1"/>
+<stop offset="0.234375" stop-color="rgb(100%, 38.822937%, 16.470337%)" stop-opacity="1"/>
+<stop offset="0.242188" stop-color="rgb(100%, 39.215088%, 16.470337%)" stop-opacity="1"/>
+<stop offset="0.25" stop-color="rgb(100%, 39.215088%, 16.078186%)" stop-opacity="1"/>
+<stop offset="0.257812" stop-color="rgb(100%, 39.607239%, 16.078186%)" stop-opacity="1"/>
+<stop offset="0.265625" stop-color="rgb(100%, 39.99939%, 16.078186%)" stop-opacity="1"/>
+<stop offset="0.273437" stop-color="rgb(100%, 40.391541%, 15.686035%)" stop-opacity="1"/>
+<stop offset="0.28125" stop-color="rgb(100%, 40.391541%, 15.686035%)" stop-opacity="1"/>
+<stop offset="0.289062" stop-color="rgb(100%, 40.783691%, 15.293884%)" stop-opacity="1"/>
+<stop offset="0.296875" stop-color="rgb(100%, 41.175842%, 15.293884%)" stop-opacity="1"/>
+<stop offset="0.304687" stop-color="rgb(100%, 41.567993%, 14.901733%)" stop-opacity="1"/>
+<stop offset="0.3125" stop-color="rgb(100%, 41.567993%, 14.901733%)" stop-opacity="1"/>
+<stop offset="0.320312" stop-color="rgb(100%, 41.960144%, 14.901733%)" stop-opacity="1"/>
+<stop offset="0.328125" stop-color="rgb(100%, 42.352295%, 14.509583%)" stop-opacity="1"/>
+<stop offset="0.335938" stop-color="rgb(100%, 42.352295%, 14.509583%)" stop-opacity="1"/>
+<stop offset="0.34375" stop-color="rgb(100%, 42.744446%, 14.117432%)" stop-opacity="1"/>
+<stop offset="0.351562" stop-color="rgb(100%, 43.136597%, 14.117432%)" stop-opacity="1"/>
+<stop offset="0.359375" stop-color="rgb(100%, 43.528748%, 13.725281%)" stop-opacity="1"/>
+<stop offset="0.367187" stop-color="rgb(100%, 43.528748%, 13.725281%)" stop-opacity="1"/>
+<stop offset="0.375" stop-color="rgb(100%, 43.920898%, 13.725281%)" stop-opacity="1"/>
+<stop offset="0.382812" stop-color="rgb(100%, 44.313049%, 13.33313%)" stop-opacity="1"/>
+<stop offset="0.390625" stop-color="rgb(100%, 44.7052%, 13.33313%)" stop-opacity="1"/>
+<stop offset="0.398437" stop-color="rgb(100%, 44.7052%, 12.940979%)" stop-opacity="1"/>
+<stop offset="0.40625" stop-color="rgb(100%, 45.097351%, 12.940979%)" stop-opacity="1"/>
+<stop offset="0.414062" stop-color="rgb(100%, 45.489502%, 12.548828%)" stop-opacity="1"/>
+<stop offset="0.421875" stop-color="rgb(100%, 45.881653%, 12.548828%)" stop-opacity="1"/>
+<stop offset="0.429688" stop-color="rgb(100%, 45.881653%, 12.548828%)" stop-opacity="1"/>
+<stop offset="0.4375" stop-color="rgb(100%, 46.273804%, 12.156677%)" stop-opacity="1"/>
+<stop offset="0.445312" stop-color="rgb(100%, 46.665955%, 12.156677%)" stop-opacity="1"/>
+<stop offset="0.453125" stop-color="rgb(100%, 47.058105%, 11.764526%)" stop-opacity="1"/>
+<stop offset="0.460937" stop-color="rgb(100%, 47.058105%, 11.764526%)" stop-opacity="1"/>
+<stop offset="0.46875" stop-color="rgb(100%, 47.450256%, 11.372375%)" stop-opacity="1"/>
+<stop offset="0.476562" stop-color="rgb(100%, 47.842407%, 11.372375%)" stop-opacity="1"/>
+<stop offset="0.484375" stop-color="rgb(100%, 48.234558%, 11.372375%)" stop-opacity="1"/>
+<stop offset="0.492187" stop-color="rgb(100%, 48.234558%, 10.980225%)" stop-opacity="1"/>
+<stop offset="0.5" stop-color="rgb(100%, 48.626709%, 10.980225%)" stop-opacity="1"/>
+<stop offset="0.507812" stop-color="rgb(100%, 49.01886%, 10.588074%)" stop-opacity="1"/>
+<stop offset="0.515625" stop-color="rgb(100%, 49.411011%, 10.588074%)" stop-opacity="1"/>
+<stop offset="0.523437" stop-color="rgb(100%, 49.411011%, 10.195923%)" stop-opacity="1"/>
+<stop offset="0.53125" stop-color="rgb(100%, 49.803162%, 10.195923%)" stop-opacity="1"/>
+<stop offset="0.539062" stop-color="rgb(100%, 50.196838%, 10.195923%)" stop-opacity="1"/>
+<stop offset="0.546875" stop-color="rgb(100%, 50.588989%, 9.803772%)" stop-opacity="1"/>
+<stop offset="0.554687" stop-color="rgb(100%, 50.588989%, 9.803772%)" stop-opacity="1"/>
+<stop offset="0.5625" stop-color="rgb(100%, 50.98114%, 9.411621%)" stop-opacity="1"/>
+<stop offset="0.570312" stop-color="rgb(100%, 51.373291%, 9.411621%)" stop-opacity="1"/>
+<stop offset="0.578125" stop-color="rgb(100%, 51.765442%, 9.01947%)" stop-opacity="1"/>
+<stop offset="0.585937" stop-color="rgb(100%, 51.765442%, 9.01947%)" stop-opacity="1"/>
+<stop offset="0.59375" stop-color="rgb(100%, 52.157593%, 9.01947%)" stop-opacity="1"/>
+<stop offset="0.601563" stop-color="rgb(100%, 52.549744%, 8.627319%)" stop-opacity="1"/>
+<stop offset="0.609375" stop-color="rgb(100%, 52.549744%, 8.627319%)" stop-opacity="1"/>
+<stop offset="0.617188" stop-color="rgb(100%, 52.941895%, 8.235168%)" stop-opacity="1"/>
+<stop offset="0.625" stop-color="rgb(100%, 53.334045%, 8.235168%)" stop-opacity="1"/>
+<stop offset="0.632813" stop-color="rgb(100%, 53.726196%, 7.843018%)" stop-opacity="1"/>
+<stop offset="0.640625" stop-color="rgb(100%, 53.726196%, 7.843018%)" stop-opacity="1"/>
+<stop offset="0.648438" stop-color="rgb(100%, 54.118347%, 7.843018%)" stop-opacity="1"/>
+<stop offset="0.65625" stop-color="rgb(100%, 54.510498%, 7.450867%)" stop-opacity="1"/>
+<stop offset="0.664062" stop-color="rgb(100%, 54.902649%, 7.450867%)" stop-opacity="1"/>
+<stop offset="0.671875" stop-color="rgb(100%, 54.902649%, 7.058716%)" stop-opacity="1"/>
+<stop offset="0.679688" stop-color="rgb(100%, 55.2948%, 7.058716%)" stop-opacity="1"/>
+<stop offset="0.6875" stop-color="rgb(100%, 55.686951%, 6.666565%)" stop-opacity="1"/>
+<stop offset="0.695312" stop-color="rgb(100%, 56.079102%, 6.666565%)" stop-opacity="1"/>
+<stop offset="0.703125" stop-color="rgb(100%, 56.079102%, 6.666565%)" stop-opacity="1"/>
+<stop offset="0.710937" stop-color="rgb(100%, 56.471252%, 6.274414%)" stop-opacity="1"/>
+<stop offset="0.71875" stop-color="rgb(100%, 56.863403%, 6.274414%)" stop-opacity="1"/>
+<stop offset="0.726562" stop-color="rgb(100%, 57.255554%, 5.882263%)" stop-opacity="1"/>
+<stop offset="0.734375" stop-color="rgb(100%, 57.255554%, 5.882263%)" stop-opacity="1"/>
+<stop offset="0.742187" stop-color="rgb(100%, 57.647705%, 5.490112%)" stop-opacity="1"/>
+<stop offset="0.75" stop-color="rgb(100%, 58.039856%, 5.490112%)" stop-opacity="1"/>
+<stop offset="0.757812" stop-color="rgb(100%, 58.432007%, 5.490112%)" stop-opacity="1"/>
+<stop offset="0.765625" stop-color="rgb(100%, 58.432007%, 5.097961%)" stop-opacity="1"/>
+<stop offset="0.773437" stop-color="rgb(100%, 58.824158%, 5.097961%)" stop-opacity="1"/>
+<stop offset="0.78125" stop-color="rgb(100%, 59.216309%, 4.705811%)" stop-opacity="1"/>
+<stop offset="0.789062" stop-color="rgb(100%, 59.608459%, 4.705811%)" stop-opacity="1"/>
+<stop offset="0.796875" stop-color="rgb(100%, 59.608459%, 4.31366%)" stop-opacity="1"/>
+<stop offset="0.804688" stop-color="rgb(100%, 60.00061%, 4.31366%)" stop-opacity="1"/>
+<stop offset="0.8125" stop-color="rgb(100%, 60.392761%, 4.31366%)" stop-opacity="1"/>
+<stop offset="0.820313" stop-color="rgb(100%, 60.784912%, 3.921509%)" stop-opacity="1"/>
+<stop offset="0.828125" stop-color="rgb(100%, 60.784912%, 3.921509%)" stop-opacity="1"/>
+<stop offset="0.835938" stop-color="rgb(100%, 61.177063%, 3.529358%)" stop-opacity="1"/>
+<stop offset="0.84375" stop-color="rgb(100%, 61.569214%, 3.529358%)" stop-opacity="1"/>
+<stop offset="0.851562" stop-color="rgb(100%, 61.961365%, 3.137207%)" stop-opacity="1"/>
+<stop offset="0.859375" stop-color="rgb(100%, 61.961365%, 3.137207%)" stop-opacity="1"/>
+<stop offset="0.867188" stop-color="rgb(100%, 62.353516%, 3.137207%)" stop-opacity="1"/>
+<stop offset="0.875" stop-color="rgb(100%, 62.745667%, 2.745056%)" stop-opacity="1"/>
+<stop offset="0.882812" stop-color="rgb(100%, 62.745667%, 2.745056%)" stop-opacity="1"/>
+<stop offset="0.890625" stop-color="rgb(100%, 63.137817%, 2.352905%)" stop-opacity="1"/>
+<stop offset="0.898437" stop-color="rgb(100%, 63.529968%, 2.352905%)" stop-opacity="1"/>
+<stop offset="0.90625" stop-color="rgb(100%, 63.922119%, 1.960754%)" stop-opacity="1"/>
+<stop offset="0.914062" stop-color="rgb(100%, 63.922119%, 1.960754%)" stop-opacity="1"/>
+<stop offset="0.921875" stop-color="rgb(100%, 64.31427%, 1.960754%)" stop-opacity="1"/>
+<stop offset="0.929687" stop-color="rgb(100%, 64.706421%, 1.568604%)" stop-opacity="1"/>
+<stop offset="0.9375" stop-color="rgb(100%, 65.098572%, 1.568604%)" stop-opacity="1"/>
+<stop offset="0.945312" stop-color="rgb(100%, 65.098572%, 1.176453%)" stop-opacity="1"/>
+<stop offset="0.953125" stop-color="rgb(100%, 65.490723%, 1.176453%)" stop-opacity="1"/>
+<stop offset="0.960937" stop-color="rgb(100%, 65.882874%, 0.784302%)" stop-opacity="1"/>
+<stop offset="0.96875" stop-color="rgb(100%, 66.275024%, 0.784302%)" stop-opacity="1"/>
+<stop offset="0.976562" stop-color="rgb(100%, 66.275024%, 0.784302%)" stop-opacity="1"/>
+<stop offset="0.984375" stop-color="rgb(100%, 66.667175%, 0.392151%)" stop-opacity="1"/>
+<stop offset="0.992187" stop-color="rgb(100%, 67.059326%, 0.392151%)" stop-opacity="1"/>
+<stop offset="1" stop-color="rgb(100%, 67.451477%, 0%)" stop-opacity="1"/>
+</linearGradient>
+</defs>
+
+<path class="ltr" style="--i:1" fill-rule="nonzero" fill="currentColor" fill-opacity="1" d="M 302.742188 223.984375 C 302.742188 211.941406 304.421875 201.691406 307.769531 193.242188 C 311.117188 184.785156 315.636719 178.472656 321.339844 174.304688 C 327.039062 170.144531 332.871094 167.1875 338.828125 165.449219 C 344.78125 163.714844 351.3125 162.839844 358.429688 162.839844 C 368.476562 162.839844 378.386719 164.414062 388.160156 167.546875 C 391.375 168.578125 393.582031 171.542969 393.582031 174.921875 C 393.582031 179.957031 388.78125 183.617188 383.933594 182.246094 C 376.226562 180.0625 368.34375 178.972656 360.292969 178.972656 C 346.210938 178.972656 335.960938 182.535156 329.539062 189.671875 C 323.121094 196.804688 319.914062 208.246094 319.914062 223.984375 C 319.914062 239.96875 323.121094 251.496094 329.539062 258.589844 C 335.960938 265.683594 346.210938 269.230469 360.292969 269.230469 C 368.53125 269.230469 376.382812 268.140625 383.84375 265.957031 C 388.71875 264.53125 393.582031 268.171875 393.582031 273.25 L 393.582031 273.503906 C 393.582031 276.882812 391.371094 279.859375 388.148438 280.878906 C 378.707031 283.863281 368.796875 285.355469 358.429688 285.355469 C 352.867188 285.355469 347.664062 284.890625 342.832031 283.964844 C 337.996094 283.035156 333.046875 281.175781 327.976562 278.382812 C 322.910156 275.59375 318.585938 272.011719 315.003906 267.636719 C 311.421875 263.257812 308.484375 257.34375 306.191406 249.902344 C 303.890625 242.46875 302.742188 233.828125 302.742188 223.984375 "/>
+<path class="ltr" style="--i:2" fill-rule="nonzero" fill="currentColor" fill-opacity="1" d="M 438.480469 189.414062 C 432.375 196.683594 429.320312 208.246094 429.320312 224.101562 C 429.320312 239.957031 432.375 251.523438 438.480469 258.789062 C 444.59375 266.058594 454.378906 269.695312 467.835938 269.695312 C 481.292969 269.695312 491.09375 266.101562 497.25 258.90625 C 503.394531 251.710938 506.46875 240.109375 506.46875 224.101562 C 506.46875 208.085938 503.394531 196.492188 497.25 189.296875 C 491.09375 182.105469 481.292969 178.507812 467.835938 178.507812 C 454.378906 178.507812 444.59375 182.144531 438.480469 189.414062 M 417.132812 254.902344 C 413.808594 246.4375 412.148438 236.164062 412.148438 224.101562 C 412.148438 212.03125 413.808594 201.765625 417.132812 193.300781 C 420.464844 184.828125 424.980469 178.507812 430.707031 174.328125 C 436.429688 170.152344 442.25 167.195312 448.164062 165.457031 C 454.089844 163.714844 460.625 162.839844 467.777344 162.839844 C 474.929688 162.839844 481.507812 163.714844 487.496094 165.457031 C 493.496094 167.195312 499.351562 170.152344 505.074219 174.328125 C 510.796875 178.507812 515.324219 184.828125 518.644531 193.300781 C 521.976562 201.765625 523.640625 212.03125 523.640625 224.101562 C 523.640625 236.164062 521.976562 246.4375 518.644531 254.902344 C 515.324219 263.375 510.796875 269.695312 505.074219 273.875 C 499.351562 278.054688 493.496094 281.011719 487.496094 282.746094 C 481.507812 284.492188 474.929688 285.355469 467.777344 285.355469 C 460.625 285.355469 454.089844 284.492188 448.164062 282.746094 C 442.25 281.011719 436.429688 278.054688 430.707031 273.875 C 424.980469 269.695312 420.464844 263.375 417.132812 254.902344 "/>
+<path class="ltr" style="--i:3" fill-rule="nonzero" fill="currentColor" fill-opacity="1" d="M 550.902344 275.847656 L 550.902344 179.394531 C 550.902344 176.28125 552.769531 173.492188 555.617188 172.234375 C 569.832031 165.976562 584.980469 162.839844 601.082031 162.839844 C 615.992188 162.839844 627.5625 166.636719 635.785156 174.214844 C 644.007812 181.796875 648.128906 192.46875 648.128906 206.234375 L 648.128906 275.847656 C 648.128906 280.074219 644.699219 283.503906 640.472656 283.503906 L 638.613281 283.503906 C 634.386719 283.503906 630.960938 280.074219 630.960938 275.847656 L 630.960938 206.234375 C 630.960938 202.914062 630.609375 199.957031 629.914062 197.355469 C 629.214844 194.769531 627.867188 192.003906 625.859375 189.066406 C 623.847656 186.125 620.609375 183.863281 616.132812 182.277344 C 611.65625 180.691406 606.023438 179.894531 599.226562 179.894531 C 591.109375 179.894531 582.710938 180.949219 574.027344 183.058594 C 570.550781 183.902344 568.078125 187 568.078125 190.578125 L 568.078125 275.847656 C 568.078125 280.074219 564.652344 283.503906 560.421875 283.503906 L 558.558594 283.503906 C 554.328125 283.503906 550.902344 280.074219 550.902344 275.847656 "/>
+<path class="ltr" style="--i:4" fill-rule="nonzero" fill="currentColor" fill-opacity="1" d="M 695.921875 210.382812 C 695.292969 214.988281 698.898438 219.109375 703.546875 219.109375 L 760.929688 219.109375 C 762.972656 219.109375 764.617188 217.371094 764.417969 215.339844 C 764.253906 213.675781 763.988281 211.917969 763.621094 210.0625 C 762.96875 206.742188 761.644531 202.464844 759.667969 197.246094 C 757.699219 192.023438 754.136719 187.667969 748.980469 184.1875 C 743.828125 180.707031 737.457031 178.972656 729.867188 178.972656 C 718.085938 178.972656 709.546875 182.027344 704.238281 188.132812 C 700.0625 192.945312 697.292969 200.359375 695.921875 210.382812 M 677.949219 225.722656 L 677.949219 223.984375 C 677.949219 183.226562 695.25 162.839844 729.867188 162.839844 C 737.09375 162.839844 743.652344 163.988281 749.535156 166.261719 C 755.414062 168.546875 760.09375 171.238281 763.558594 174.328125 C 767.011719 177.425781 770.054688 181.464844 772.667969 186.457031 C 775.285156 191.441406 777.144531 195.675781 778.269531 199.15625 C 779.378906 202.636719 780.246094 206.855469 780.859375 211.800781 C 781.472656 216.601562 781.78125 219.617188 781.78125 220.855469 L 781.78125 225.953125 C 781.78125 225.953125 781.492188 231.011719 779.308594 233.195312 C 777.875 234.628906 775.664062 234.308594 775.664062 234.308594 L 701.554688 234.3125 C 698.023438 234.3125 695.382812 237.5625 696.066406 241.027344 C 697.75 249.53125 701.078125 255.9375 706.042969 260.242188 C 712.238281 265.617188 721.417969 268.300781 733.585938 268.300781 C 745.488281 268.300781 755.632812 266.894531 764.023438 264.078125 C 769.011719 262.402344 774.164062 266.03125 774.164062 271.292969 L 774.164062 272.0625 C 774.164062 275.242188 772.214844 278.097656 769.253906 279.257812 C 758.851562 283.324219 746.65625 285.355469 732.65625 285.355469 L 731.957031 285.355469 C 725.015625 285.355469 718.660156 284.523438 712.871094 282.863281 C 707.089844 281.199219 701.40625 278.316406 695.816406 274.222656 C 690.226562 270.121094 685.847656 263.957031 682.683594 255.714844 C 679.527344 247.476562 677.949219 237.484375 677.949219 225.722656 "/>
+<path class="ltr" style="--i:5" fill-rule="nonzero" fill="currentColor" fill-opacity="1" d="M 807.664062 270.476562 L 837.484375 228.15625 C 839.492188 225.304688 839.496094 221.5 837.488281 218.644531 L 808.90625 177.953125 C 805.0625 172.472656 808.976562 164.933594 815.671875 164.933594 C 818.355469 164.933594 820.871094 166.238281 822.417969 168.425781 L 848.054688 204.675781 C 849.511719 206.738281 852.570312 206.738281 854.027344 204.675781 L 879.660156 168.425781 C 881.210938 166.238281 883.726562 164.933594 886.410156 164.933594 L 887.078125 164.933594 C 893.777344 164.933594 897.695312 172.484375 893.835938 177.960938 L 864.839844 219.101562 C 862.828125 221.960938 862.828125 225.777344 864.847656 228.632812 L 894.390625 270.46875 C 898.257812 275.941406 894.34375 283.503906 887.640625 283.503906 L 887.351562 283.503906 C 884.664062 283.503906 882.140625 282.195312 880.59375 279.996094 L 854.265625 242.621094 C 852.808594 240.550781 849.738281 240.550781 848.28125 242.621094 L 821.953125 279.996094 C 820.40625 282.195312 817.882812 283.503906 815.195312 283.503906 L 814.421875 283.503906 C 807.722656 283.503906 803.804688 275.953125 807.664062 270.476562 "/>
+<path class="ltr" style="--i:6" fill-rule="nonzero" fill="currentColor" fill-opacity="1" d="M 938.980469 247.070312 C 938.980469 261.847656 949.714844 269.230469 971.179688 269.230469 L 971.527344 269.230469 C 992.527344 269.230469 1003.027344 262.078125 1003.027344 247.765625 L 1003.027344 231.785156 C 1003.027344 227.828125 1000.035156 224.496094 996.09375 224.15625 C 992.042969 223.808594 987.328125 223.636719 981.953125 223.636719 C 953.300781 223.636719 938.980469 231.453125 938.980469 247.070312 M 921.8125 247.070312 C 921.8125 241.746094 922.800781 236.96875 924.769531 232.742188 C 926.746094 228.511719 929.164062 225.089844 932.019531 222.464844 C 934.886719 219.839844 938.515625 217.589844 942.929688 215.726562 C 947.339844 213.859375 951.242188 212.488281 954.648438 211.617188 C 958.054688 210.738281 962.089844 210.074219 966.765625 209.617188 C 971.453125 209.160156 974.777344 208.890625 976.753906 208.808594 C 978.695312 208.734375 981 208.703125 983.660156 208.703125 C 983.730469 208.703125 983.808594 208.703125 983.878906 208.707031 L 993.75 209.292969 C 998.789062 209.59375 1002.921875 205.039062 1001.824219 200.113281 C 1000.53125 194.296875 997.941406 189.859375 994.054688 186.789062 C 988.222656 182.195312 979.59375 179.894531 968.171875 179.894531 C 959.09375 179.894531 950.65625 180.84375 942.855469 182.742188 C 938.078125 183.90625 933.5 180.257812 933.5 175.34375 L 933.5 174.609375 C 933.5 171.171875 935.789062 168.164062 939.085938 167.191406 C 948.953125 164.292969 958.953125 162.839844 969.09375 162.839844 C 985.707031 162.839844 998.375 167.035156 1007.105469 175.433594 C 1015.835938 183.824219 1020.195312 196.101562 1020.195312 212.265625 L 1020.195312 247.882812 C 1020.195312 255.46875 1018.441406 261.945312 1014.921875 267.320312 C 1011.40625 272.695312 1006.886719 276.582031 1001.363281 278.972656 C 995.839844 281.375 990.664062 283.035156 985.839844 283.96875 C 981.003906 284.898438 976.238281 285.355469 971.527344 285.355469 C 967.890625 285.355469 964.152344 285.121094 960.320312 284.65625 C 956.484375 284.191406 952.148438 283.128906 947.304688 281.457031 C 942.472656 279.789062 938.269531 277.664062 934.703125 275.0625 C 931.140625 272.460938 928.101562 268.730469 925.59375 263.890625 C 923.074219 259.039062 921.8125 253.433594 921.8125 247.070312 "/>
+<g class="sym" clip-path="url(#clip-0)">
+<g clip-path="url(#clip-1)">
+<path fill-rule="nonzero" fill="url(#linear-pattern-0)" d="M 59.066406 96.019531 L 59.066406 326.980469 L 243.953125 326.980469 L 243.953125 96.019531 Z M 59.066406 96.019531 "/>
+</g>
+</g>
+</svg>
+</div>
+    <p class="tagline" id="tagline">Gestão de receita recorrente, do contrato à nota fiscal.</p>
+    <div class="hero-foot mono"><span>Brandbook · v1.0</span><span class="scrollhint"><i></i>Role para descobrir</span><span>Feira de Santana · 2026</span></div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="wrap"><p id="mtext">Quem vive de mensalidade não deveria viver apagando incêndio. *Cobrança, *contrato, *inadimplência e *caixa não cabem mais numa planilha. A Conexa devolve a quem empreende *tempo e *previsibilidade, com tecnologia que roda o ciclo inteiro e *gente que entende de recorrência.</p></div>
+</section>
+
+<!-- SUMÁRIO -->
+<section id="sumario">
+  <div class="wrap">
+    <div class="kicker mono">Sumário</div>
+    <h2 class="rv">Seis capítulos para a marca<br>ser <em class="o">lembrada na hora certa.</em></h2>
+    <div class="toc rv">
+      <a href="#cap1"><span class="mono">01</span><h3>Apresentação da marca</h3></a>
+      <a href="#cap2"><span class="mono">02</span><h3>Diferenciais e concorrência</h3></a>
+      <a href="#cap3"><span class="mono">03</span><h3>Público-alvo</h3></a>
+      <a href="#cap4"><span class="mono">04</span><h3>Posicionamento e atributos</h3></a>
+      <a href="#cap5"><span class="mono">05</span><h3>Propósito</h3></a>
+      <a href="#cap6"><span class="mono">06</span><h3>Brandsense</h3></a>
+    </div>
+  </div>
+</section>
+
+<!-- 01 -->
+<section class="chapter" id="cap1" data-theme="orange">
+  <span class="num mono">Capítulo 01</span>
+  <div class="big stretch">Apresentação</div>
+  <div class="sub mono"><span>História · Marca · Cores · Tipografia · Valores · Personalidade</span><span>↓</span></div>
+</section>
+
+<section id="historia">
+  <div class="wrap">
+    <div class="kicker mono">1.1 · História</div>
+    <h2 class="rv">Dez anos fazendo<br>a recorrência <em class="o">funcionar.</em></h2>
+    <p class="lead rv">A Conexa nasceu como pioneira nacional em software para coworking e virou uma plataforma completa de gestão de receita recorrente para contabilidades, empresas SaaS e coworkings. Hoje, mais de 2.500 empresas usam a Conexa para automatizar o ciclo financeiro do contrato à nota fiscal, com especialistas humanos nos casos que a automação sozinha não resolve.</p>
+    <div class="stats">
+      <div class="card c1 rv"><div class="n" data-count="10">0</div><p>anos de mercado, pioneira nacional em coworking.</p></div>
+      <div class="card c2 rv"><div class="n"><span data-count="2500">0</span>+</div><p>clientes ativos que vivem de mensalidade.</p></div>
+      <div class="card c3 dark rv"><div class="n">4,9</div><p>nota no B2B Stack. O suporte tem 5,0.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="marca" data-theme="light">
+  <div class="wrap">
+    <div class="kicker mono">1.2 · A marca</div>
+    <h2 class="rv">Um símbolo que <em class="o">conecta.</em></h2>
+    <p class="lead rv">O símbolo da Conexa liga pontos por uma forma orgânica, como pessoas e soluções conectadas. O degradê laranja dá energia, e o nome em minúsculas, de traço arredondado, deixa a marca próxima.</p>
+    <div class="logos">
+      <figure class="rv lg-main"><img src="assets/logo-1.webp" alt="Marca Conexa colorida sobre fundo claro"><figcaption class="mono">Principal · fundo claro</figcaption></figure>
+      <figure class="rv"><img src="assets/logo-2.webp" alt="Marca Conexa colorida sobre fundo escuro"><figcaption class="mono">Principal · fundo escuro</figcaption></figure>
+      <figure class="rv"><img src="assets/logo-3.webp" alt="Marca Conexa monocromática branca"><figcaption class="mono">Monocromática · negativa</figcaption></figure>
+      <figure class="rv"><img src="assets/logo-4.webp" alt="Marca Conexa monocromática preta"><figcaption class="mono">Monocromática · positiva</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="cores">
+  <div class="wrap">
+    <div class="kicker mono">1.3 · Paleta de cores</div>
+    <h2 class="rv">Laranja que <em class="o">acende,</em><br>preto e branco que organizam.</h2>
+    <p class="lead rv">Clique em uma cor para copiar o código.</p>
+    <div class="palette">
+      <button class="sw rv" data-hex="#FF7800" style="background:#ff7800;color:#0c0c0c"><span class="mono">Primária</span><b>Laranja Conexa</b><span class="codes mono">HEX #FF7800<br>RGB 255 · 120 · 0</span><em class="mono cp">copiar</em></button>
+      <button class="sw rv" data-hex="#0C0C0C" style="background:#0c0c0c;color:#fcfcfc;border:1px solid rgba(252,252,252,.15)"><span class="mono">Base</span><b>Preto Conexa</b><span class="codes mono">HEX #0C0C0C<br>RGB 12 · 12 · 12</span><em class="mono cp">copiar</em></button>
+      <button class="sw rv" data-hex="#FCFCFC" style="background:#fcfcfc;color:#0c0c0c"><span class="mono">Base</span><b>Branco Conexa</b><span class="codes mono">HEX #FCFCFC<br>RGB 252 · 252 · 252</span><em class="mono cp">copiar</em></button>
+    </div>
+    <div class="grad rv"><span class="mono">Degradê do símbolo</span></div>
+  </div>
+</section>
+
+<section id="tipografia" data-theme="orange">
+  <div class="wrap">
+    <div class="kicker mono">1.4 · Tipografia</div>
+    <div class="type">
+      <div class="rv"><div class="aa">Aa</div><h3 style="margin-top:10px">Krub</h3><p class="mono" style="margin-top:8px">Fonte institucional</p></div>
+      <div class="rv">
+        <div class="tw"><span class="mono">SemiBold · 600 · títulos</span><p style="font-weight:600;font-size:clamp(30px,3.6vw,54px);line-height:1.05;letter-spacing:-.03em">Previsibilidade para crescer.</p></div>
+        <div class="tw"><span class="mono">Regular · 400 · textos</span><p style="font-size:20px;line-height:1.5">A Conexa automatiza o ciclo financeiro inteiro, do contrato à nota fiscal, com especialistas humanos onde a automação sozinha não resolve.</p></div>
+        <div class="tw"><span class="mono">Alfabeto</span><p style="font-size:24px;line-height:1.4;word-break:break-all">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 · R$ % @ & ?!</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="valores">
+  <div class="wrap">
+    <div class="kicker mono">1.5 · Valores e objetivos</div>
+    <h2 class="rv">O que move<br>a <em class="o">Conexa.</em></h2>
+    <div class="pillars">
+      <div class="card rv"><span class="mono">Valor</span><h3>Devolver tempo</h3><p>Clientes descrevem a Conexa como "libertadora de tempo".</p></div>
+      <div class="card rv"><span class="mono">Valor</span><h3>De igual para igual</h3><p>Atender como quem entende de recorrência, porque também vive dela.</p></div>
+      <div class="card rv"><span class="mono">Valor</span><h3>Gente onde precisa de gente</h3><p>Nos casos complexos, quem atende é uma pessoa.</p></div>
+      <div class="card rv"><span class="mono">Valor</span><h3>Decidir com dados</h3><p>Trocar o "apagar incêndio" pela tranquilidade de saber o que entra no caixa.</p></div>
+    </div>
+    <div class="stats">
+      <div class="card c4 rv"><span class="mono" style="color:var(--laranja)">Objetivo 01</span><p style="font-size:19px;color:var(--fg)">Ocupar o degrau de especialista em gestão de receita recorrente, que ainda não tem dono.</p></div>
+      <div class="card c5 rv"><span class="mono" style="color:var(--laranja)">Objetivo 02</span><p style="font-size:19px;color:var(--fg)">Ser lembrada: sair de ≈1% de participação nas buscas da categoria.</p></div>
+      <div class="card c6 rv"><span class="mono" style="color:var(--laranja)">Objetivo 03</span><p style="font-size:19px;color:var(--fg)">Fazer o empreendedor crescer sem precisar inflar a equipe.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="essencia" data-theme="light">
+  <div class="wrap">
+    <div class="kicker mono">1.6 · Essência e identidade única</div>
+    <h2 class="rv">Quem procura "conexa" quase nunca <em class="o">encontra a Conexa.</em></h2>
+    <p class="lead rv">A essência da Conexa é a previsibilidade feita com gente. Só que hoje nada identifica a marca além do nome, e o nome é dividido com outras empresas: a cada 6 pessoas que procuram "conexa" no Google, 5 chegam em outro lugar. Como trocar de nome não está em jogo, a identidade única precisa vir de outro elemento.</p>
+    <div class="stats mini">
+      <div class="card c4 rv"><div class="n">≈1%</div><p>de participação efetiva nas buscas da categoria.</p></div>
+      <div class="card c5 rv"><div class="n">5 de 6</div><p>cliques em "conexa" no Google vão para outra empresa.</p><div class="dots"><i class="me"></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="card c6 rv"><div class="n">3–4×</div><p>mais buscas para os concorrentes diretos do que para "conexa".</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="nexa" data-theme="orange">
+  <div class="wrap nexa-grid">
+    <div>
+      <div class="kicker mono">1.7 · Personalidade · Nexa</div>
+      <h2 class="rv">A personalidade<br>ganhou um rosto.</h2>
+      <p class="lead rv">A Nexa nasce do próprio símbolo da Conexa e traduz a personalidade da marca: ágil, protetora, esperta e bem-humorada. É uma especialista próxima, que orienta sem infantilizar. E é o ativo distintivo da marca: quem vê a Nexa reconhece a Conexa antes de ler o nome.</p>
+      <div class="chain" style="margin-top:40px">
+        <div class="step rv"><span class="mono">01</span><h3>Nome dividido</h3></div>
+        <div class="step rv hot"><span class="mono">02</span><h3>Nexa</h3></div>
+        <div class="step rv"><span class="mono">03</span><h3>Presença contínua</h3></div>
+        <div class="step rv hot"><span class="mono">04</span><h3>Lembrada na hora certa</h3></div>
+      </div>
+    </div>
+    <div class="nexa-stage rv">
+      <div class="orbit"><i></i></div><div class="orbit b"><i></i></div>
+      <img src="assets/n15_em_pe_de_frente.webp" alt="Nexa em pé, de frente">
+    </div>
+  </div>
+</section>
+
+<section id="galeria">
+  <div class="wrap">
+    <div class="kicker mono">1.8 · Expressões da personalidade</div>
+    <h2 class="rv">22 jeitos de ser<br>a <em class="o">mesma</em> Nexa.</h2>
+    <p class="lead rv">Alerta, esforço, alívio e comemoração: cada expressão acompanha um momento da rotina de quem empreende.</p>
+    <div class="bento" id="bento"></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="chapter" id="cap2">
+  <span class="num mono">Capítulo 02</span>
+  <div class="big stretch">Diferenciais</div>
+  <div class="sub mono"><span>O que só a Conexa entrega · Concorrência</span><span>↓</span></div>
+</section>
+
+<section id="diferenciais">
+  <div class="wrap">
+    <div class="kicker mono">2 · Diferenciais de marca</div>
+    <h2 class="rv">Automação, todo mundo promete. <em class="o">Especialista que atende,</em> só a Conexa.</h2>
+    <p class="lead rv">Automação e facilidade de uso são o mínimo que o cliente espera de qualquer sistema. A Conexa se separa pela soma de um motor de recorrência difícil de copiar com especialistas humanos.</p>
+    <div class="diff">
+      <div class="drow rv strong"><span class="mono">Diferencial forte</span><h3>Especialização em recorrência</h3><p>13º honorário, reajuste por IPCA em lote, retentativa de cartão e controle de acesso por IoT em catracas.</p></div>
+      <div class="drow rv strong"><span class="mono">Diferencial forte</span><h3>Suporte humano especializado</h3><p>Nota 5,0 no B2B Stack, num mercado criticado por robôs e lentidão.</p></div>
+      <div class="drow rv"><span class="mono">Prova</span><h3>Pioneirismo em coworking</h3><p>Cerca de 10 anos e referência nacional no segmento.</p></div>
+      <div class="drow rv"><span class="mono">Prova</span><h3>Métricas de SaaS na tela inicial</h3><p>MRR, CAC e LTV visíveis sem exportar dados.</p></div>
+      <div class="drow rv"><span class="mono">Prova</span><h3>API aberta</h3><p>API e webhooks sem cobrança por requisição.</p></div>
+      <div class="drow rv floor"><span class="mono">Piso da categoria</span><h3>Automação e facilidade de uso</h3><p>Todos os concorrentes prometem o mesmo, então isso não diferencia a Conexa.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="concorrencia" data-theme="light">
+  <div class="wrap">
+    <div class="kicker mono">2.1 · Concorrência</div>
+    <h2 class="rv">Cada concorrente já é<br>dono de um <em class="o">degrau.</em></h2>
+    <p class="lead rv">Os concorrentes prometem simplicidade e automação, e as reclamações dos clientes deles se concentram no pós-venda. Ninguém ocupa o lugar de especialista em receita recorrente.</p>
+    <div class="ladder">
+      <div class="lrow rv"><b>Omie</b><span class="mono">Direto · ERP</span><p>"ERP completo, tudo em um"</p><small>135 mil buscas/mês · críticas: lentidão e "robô" no atendimento</small></div>
+      <div class="lrow rv"><b>Totvs</b><span class="mono">Direto · grandes empresas</span><p>Autoridade em operações complexas</p><small>135 mil buscas/mês · críticas: sistema "engessado"</small></div>
+      <div class="lrow rv"><b>Conta Azul</b><span class="mono">Direto · ERP</span><p>"Gestão financeira simples para a pequena empresa"</p><small>110 mil buscas/mês · críticas: suporte lento, cancelamento burocrático</small></div>
+      <div class="lrow rv"><b>Asaas</b><span class="mono">Indireto · gateway</span><p>"Receber pagamentos de forma fácil"</p><small>110 mil buscas/mês · críticas: conta bloqueada, saldo retido</small></div>
+      <div class="lrow rv"><b>Domínio</b><span class="mono">Indireto · contábil</span><p>"Compliance fiscal do contador"</p><small>Backoffice de escritórios contábeis</small></div>
+      <div class="lrow rv"><b>Planilhas</b><span class="mono">Substituto</span><p>O processo manual que o cliente ainda usa</p><small>Todos os segmentos</small></div>
+      <div class="lrow rv me"><b>Conexa</b><span class="mono">Degrau livre</span><p>"A especialista em gestão de receita recorrente"</p><small>Nenhum concorrente reivindica esse lugar</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="chapter" id="cap3" data-theme="orange">
+  <span class="num mono">Capítulo 03</span>
+  <div class="big stretch">Público</div>
+  <div class="sub mono"><span>Demográfico · Geográfico · Comportamental · Psicográfico</span><span>↓</span></div>
+</section>
+
+<section id="publico">
+  <div class="wrap">
+    <div class="kicker mono">3 · Público-alvo</div>
+    <h2 class="rv">Quem vive<br>de <em class="o">mensalidade.</em></h2>
+    <p class="lead rv">Empresas de médio a grande porte que gerenciam contratos, faturamento e cobrança de forma manual e fragmentada.</p>
+    <div class="aud">
+      <div class="card rv"><span class="mono">Demográfico</span><h3>O decisor</h3><ul><li>Homem, de 35 a mais de 50 anos</li><li>Dono ou gestor do negócio</li><li>Equipes financeira, operacional e de TI influenciam a escolha</li></ul></div>
+      <div class="card rv"><span class="mono">Geográfico</span><h3>Onde estão</h3><ul><li>Atuação nacional, com plataforma 100% online</li><li>Coworkings com operação estruturada</li><li>Contabilidades com 70+ clientes · SaaS com 30+ clientes</li></ul></div>
+      <div class="card rv"><span class="mono">Comportamental</span><h3>Como agem</h3><ul><li>Cobranças, contratos e caixa em planilhas e internet banking</li><li>Compra quando a inadimplência e a falta de previsibilidade ficam insustentáveis</li><li>Ou quando o processo manual exigiria contratar mais gente</li></ul></div>
+      <div class="card rv dark"><span class="mono">Psicográfico</span><h3>O que sentem</h3><ul><li>Sobrecarregados pela operação do dia a dia</li><li>Querem trocar o "apagar incêndio" por decidir com dados</li><li>Valorizam ser atendidos por gente que entende do negócio</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="chapter" id="cap4">
+  <span class="num mono">Capítulo 04</span>
+  <div class="big stretch">Posição</div>
+  <div class="sub mono"><span>Declaração de posicionamento · Atributos (brand drive)</span><span>↓</span></div>
+</section>
+
+<section id="posicionamento">
+  <div class="wrap">
+    <div class="kicker mono">4 · Declaração de posicionamento</div>
+    <h2 class="rv">Para quem vive de mensalidade,<br>a <em class="o">especialista.</em></h2>
+    <p class="statement rv"><span class="k">PARA</span>donos e gestores de empresas cujo faturamento depende de contratos e mensalidades, como <b>contabilidades, SaaS e coworkings</b>, <span class="k">QUE</span>perderam o controle de cobranças, inadimplência e caixa em planilhas e processos manuais, <span class="k">A CONEXA É</span><b>a plataforma especialista em gestão de receita recorrente</b> que automatiza o ciclo financeiro inteiro, do contrato à nota fiscal, e dá previsibilidade para crescer sem aumentar a equipe, <span class="k">PORQUE</span>une um motor de recorrência nativo a <b>especialistas humanos</b> e a dez anos de experiência com mais de 2.500 clientes ativos.</p>
+    <div class="kicker mono" style="margin-top:90px">Atributos de marca · brand drive</div>
+    <div class="pillars" style="margin-top:0">
+      <div class="card rv"><span class="mono">Atributo 01</span><h3>Especialista</h3><p>Entende de recorrência porque também vive dela.</p></div>
+      <div class="card rv"><span class="mono">Atributo 02</span><h3>Previsível</h3><p>O empreendedor sabe o que entra no caixa no mês que vem.</p></div>
+      <div class="card rv"><span class="mono">Atributo 03</span><h3>Atendimento especialista</h3><p>Nos casos complexos, quem responde é uma pessoa que entende de recorrência. O suporte tem nota 5,0 no B2B Stack.</p></div>
+      <div class="card rv"><span class="mono">Atributo 04</span><h3>Libertadora de tempo</h3><p>Do "apagar incêndio" ao "decidir com dados".</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="chapter" id="cap5" data-theme="orange">
+  <span class="num mono">Capítulo 05</span>
+  <div class="big stretch">Propósito</div>
+  <div class="sub mono"><span>Por que a Conexa existe</span><span>↓</span></div>
+</section>
+
+<section id="proposito">
+  <div class="wrap rv">
+    <div class="kicker mono">5 · Declaração de propósito</div>
+    <p class="purpose" id="ptext">Nós existimos para fazer da conexão entre pessoas o caminho para uma rotina mais previsível de quem empreende.</p>
+    <p class="lead">E buscamos ajudar donos e gestores que vivem de mensalidade, em contabilidades, SaaS e coworkings, a trocar o "apagar incêndio" pela tranquilidade de decidir com dados.</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="chapter" id="cap6">
+  <span class="num mono">Capítulo 06</span>
+  <div class="big stretch">Brandsense</div>
+  <div class="sub mono"><span>Marca multissensorial · Ativação de marca</span><span>↓</span></div>
+</section>
+
+<section id="ativacao">
+  <div class="wrap nexa-grid">
+    <div>
+      <div class="kicker mono">6 · Ativação de marca</div>
+      <h2 class="rv">Nexa: a guardiã<br>da <em class="o">receita recorrente.</em></h2>
+      <p class="lead rv">Uma experiência imersiva e gamificada em que o participante controla a Nexa e protege um empreendedor do caos dos processos manuais. Cada problema interceptado vira uma solução Conexa, e o público aprende o posicionamento jogando.</p>
+      <a class="play rv" href="https://conexa-game.vercel.app/" target="_blank" rel="noopener"><span>▶</span> Jogar com a Nexa</a>
+      <div class="swap rv">
+        <div><span class="mono">Problema</span><p>Cobranças manuais</p></div><i>→</i><div><span class="mono">Solução</span><p>Régua de cobrança automatizada</p></div>
+        <div><span class="mono">Problema</span><p>Inadimplência sem controle</p></div><i>→</i><div><span class="mono">Solução</span><p>Retentativas automáticas</p></div>
+        <div><span class="mono">Problema</span><p>Notas fiscais manuais</p></div><i>→</i><div><span class="mono">Solução</span><p>NFS-e integrada</p></div>
+      </div>
+    </div>
+    <div class="nexa-stage rv">
+      <div class="orbit"><i></i></div><div class="orbit b"><i></i></div>
+      <img src="assets/n20_caminhando.webp" alt="Nexa caminhando">
+    </div>
+  </div>
+</section>
+
+<section id="sentidos" data-theme="orange">
+  <div class="wrap">
+    <div class="kicker mono">6.1 · Os cinco sentidos</div>
+    <h2 class="rv">A Conexa para ver, ouvir,<br>tocar, cheirar e provar.</h2>
+    <div class="senses">
+      <div class="sense rv"><span class="mono">01 · Visão</span><h3>Imersão</h3><p>Cabine escura com projeção do jogo, escritório em caos como cenário, cores da Conexa e ranking digital.</p></div>
+      <div class="sense rv"><span class="mono">02 · Audição</span><h3>Personalidade</h3><p>Voz exclusiva da Nexa com alertas e orientações, e efeitos sonoros para capturas e transformações.</p></div>
+      <div class="sense rv"><span class="mono">03 · Tato</span><h3>Interação</h3><p>Joystick físico, botões com resposta tátil e a miniatura da Nexa na premiação.</p></div>
+      <div class="sense rv"><span class="mono">04 · Olfato</span><h3>Associação</h3><p>Aroma suave de café na área de degustação, ligado ao booster do jogo.</p></div>
+      <div class="sense rv"><span class="mono">05 · Paladar</span><h3>Pausa e recompensa</h3><p>Balinhas ou degustação de café: no mundo real, o booster de energia que a Nexa coleta.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="espaco">
+  <div class="wrap">
+    <div class="kicker mono">6.2 · Ambientação</div>
+    <h2 class="rv">Do convite<br>ao <em class="o">pódio.</em></h2>
+    <div class="space">
+      <div class="card rv"><span class="mono">A</span><h3>Entrada e convite</h3><p>Totem ampliado da Nexa com o letreiro "Desafie a Nexa!".</p></div>
+      <div class="card rv"><span class="mono">B</span><h3>Cabine de jogo</h3><p>Estrutura preta com projeção e joystick, iluminação que destaca o laranja da Nexa.</p></div>
+      <div class="card rv"><span class="mono">C</span><h3>Ranking e espera</h3><p>Tablet com os melhores tempos do lado de fora.</p></div>
+      <div class="card rv"><span class="mono">D</span><h3>Café e brindes</h3><p>Degustação, balinhas e troféus de ouro, prata e bronze com a Nexa.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="wrap">
+    <p class="end">Menos incêndio. <em class="o">Mais previsibilidade.</em></p>
+    <p class="mono" style="margin-top:60px;color:var(--muted)">Conexa · Brandbook · Gabriel Mota Seixas · Maria Eduarda S. Nascimento · Nathalia F. dos Santos · Thayssa M. da Silva · Vanessa de J. L. Santos · Branding UNEF 2026</p>
+  </div>
+</footer>
+
+<div id="companion"><div class="bubble" id="bubble"></div><img id="cimg" src="assets/n17_acenando_com_a_mao_direita.webp" alt="Nexa"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+// loader
+(function(){let n=0;const c=$('#count'),b=$('#bar');const t=setInterval(()=>{n=Math.min(100,n+Math.ceil(Math.random()*9));c.textContent=String(n).padStart(3,'0')+'%';b.style.width=n+'%';if(n>=100){clearInterval(t);setTimeout(()=>{$('#loader').classList.add('done');document.body.classList.add('revealed')},250)}},45)})();
+
+// manifesto words
+(function(){const p=$('#mtext');p.innerHTML=p.textContent.trim().split(/\s+/).map(w=>w.startsWith('*')?`<span class="w hl">${w.slice(1)}</span>`:`<span class="w">${w}</span>`).join(' ')})();
+// purpose words
+(function(){const p=$('#ptext');p.innerHTML=p.textContent.split(' ').map((w,i)=>`<span style="transition-delay:${i*45}ms">${w}</span>`).join(' ')})();
+
+// bento
+const NX=[["01_frontal","Frontal","w2 h2"],["17_acenando_com_a_mao_direita","Acenando",""],["13_sorriso_empolgado","Empolgada",""],["09_gargalhando_de_boca_aberta","Gargalhando",""],["12_pensativa","Pensativa",""],["21_apontando_para_frente_animada","Apontando",""],["10_surpresa","Surpresa",""],["14_sonolenta","Sonolenta",""],["18_pulando","Pulando",""],["11_cantando","Cantando",""],["08_cabeca_inclinada","Cabeça inclinada",""],["22_dancando","Dançando",""],["02_3_4_virada_para_a_esquerda","3/4 esquerda",""],["03_3_4_virada_para_a_direita","3/4 direita",""],["04_perfil_esquerdo","Perfil esquerdo",""],["05_perfil_direito","Perfil direito",""],["06_olhando_levemente_para_cima","Olhando p/ cima",""],["07_olhando_levemente_para_baixo","Olhando p/ baixo",""],["19_sentada_de_pernas_cruzadas","Sentada",""],["20_caminhando","Caminhando",""],["15_em_pe_de_frente","Em pé",""],["16_em_pe_de_costas","De costas",""]];
+$('#bento').innerHTML=NX.map((x,i)=>`<figure class="rv ${x[2]}"><img loading="lazy" src="assets/n${x[0]}.webp" alt="Nexa ${x[1]}"><figcaption>${String(i+1).padStart(2,'0')} · ${x[1]}</figcaption></figure>`).join('');
+
+// companion poses per section
+const POSE={sumario:["17_acenando_com_a_mao_direita","Oi! Eu sou a Nexa. Vou te guiar por aqui."],cap1:["21_apontando_para_frente_animada","Primeiro: quem é a Conexa."],historia:["13_sorriso_empolgado","Dez anos e mais de 2.500 clientes!"],marca:["21_apontando_para_frente_animada","Olha eu aí no símbolo!"],cores:["13_sorriso_empolgado","Clica numa cor pra copiar."],tipografia:["12_pensativa",""],valores:["15_em_pe_de_frente",""],essencia:["10_surpresa","5 de 6 cliques vão para outra empresa?!"],nexa:null,galeria:["22_dancando","Escolhe a sua favorita."],cap2:["18_pulando","O que só a gente faz."],diferenciais:["12_pensativa","Aqui quem atende entende de recorrência."],concorrencia:["08_cabeca_inclinada","Esse degrau aí embaixo está livre…"],cap3:["21_apontando_para_frente_animada","Para quem a gente existe."],publico:["06_olhando_levemente_para_cima",""],cap4:["19_sentada_de_pernas_cruzadas",""],posicionamento:["12_pensativa","Especialista em uma coisa só: recorrência."],cap5:["11_cantando",""],proposito:null,cap6:["09_gargalhando_de_boca_aberta","Agora é hora de jogar comigo!"],ativacao:null,sentidos:["13_sorriso_empolgado","Café é meu booster ☕"],espaco:["17_acenando_com_a_mao_direita","Te vejo no stand!"]};
+const comp=$('#companion'),cimg=$('#cimg'),bub=$('#bubble');let cur='',bt;
+function setPose(id){const p=POSE[id];if(p===undefined)return;if(p===null){comp.classList.remove('on');cur=id;return}comp.classList.add('on');if(cur===id)return;cur=id;cimg.classList.add('swap');setTimeout(()=>{cimg.src='assets/n'+p[0]+'.webp';cimg.classList.remove('swap')},180);clearTimeout(bt);comp.classList.remove('talk');if(p[1]){setTimeout(()=>{bub.textContent=p[1];comp.classList.add('talk')},400);bt=setTimeout(()=>comp.classList.remove('talk'),4200)}}
+
+// copy colors
+$$('.sw').forEach(b=>b.addEventListener('click',async()=>{const c=b.querySelector('.cp');try{await navigator.clipboard.writeText(b.dataset.hex);c.textContent='copiado ✓'}catch(e){c.textContent=b.dataset.hex}setTimeout(()=>c.textContent='copiar',1600)}));
+$$('.stretch').forEach(b=>{b.style.fontSize=Math.min(17,145/(b.textContent.trim().length*1.25))+'vw'});
+// observers
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');if(e.target.classList.contains('step')){}}}),{threshold:.15});
+$$('.rv,.step').forEach(el=>io.observe(el));
+const secs=$$('section[id]');
+const tio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const t=e.target.dataset.theme||'dark';if(e.target.id==='hero'||e.target.id==='manifesto'){comp.classList.remove('on');cur=''}else setPose(e.target.id)}}),{rootMargin:'-45% 0px -45% 0px'});
+secs.forEach(s=>tio.observe(s));
+
+// counters
+const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;cio.unobserve(e.target);const el=e.target,to=+el.dataset.count,t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1400),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=v.toLocaleString('pt-BR');if(k<1)requestAnimationFrame(f)})(t0)}),{threshold:.6});
+$$('[data-count]').forEach(el=>cio.observe(el));
+
+// scroll-driven
+const hero=$('#hero'),wrap=$('.logo-wrap'),rows=$$('.behind .row'),tag=$('#tagline'),prog=$('#progress'),words=()=>$$('#manifesto .w');
+let W=words();
+function onScroll(){
+  const y=scrollY,vh=innerHeight;
+  prog.style.width=(y/(document.documentElement.scrollHeight-vh)*100)+'%';
+  // hero
+  const r=hero.getBoundingClientRect(),p=Math.min(1,Math.max(0,-r.top/(r.height-vh)));
+  const a=Math.min(1,p/.55); // text emerges
+  const e=1-Math.pow(1-a,3);
+  wrap.style.transform=`scale(${1-e*.45})`;
+  rows[0].style.transform=`translateY(${(1-e)*40}vh) translateX(${(1-e)*-8}vw)`;rows[0].style.opacity=e;
+  rows[1].style.transform=`translateY(${(1-e)*60}vh) translateX(${(1-e)*8}vw)`;rows[1].style.opacity=e;
+  const tp=Math.max(0,Math.min(1,(p-.55)/.2));tag.style.opacity=tp;tag.style.transform=`translateY(${(1-tp)*20}px)`;
+  const out=Math.max(0,(p-.85)/.15);$('#hero .stage').style.opacity=1-out*.9;
+  // manifesto
+  const m=$('#manifesto').getBoundingClientRect();const mp=Math.min(1,Math.max(0,(vh*.75-m.top)/(m.height*.8)));const on=Math.floor(mp*W.length);W.forEach((w,i)=>w.classList.toggle('on',i<on));
+  // stretch chapters
+  $$('.chapter').forEach(c=>{const b=c.getBoundingClientRect();const k=Math.min(1,Math.max(0,1-(b.top/vh)));c.querySelector('.stretch').style.setProperty('--sx',(1.35-k*.35).toFixed(3))});
+}
+addEventListener('scroll',()=>requestAnimationFrame(onScroll),{passive:true});addEventListener('resize',onScroll);onScroll();
+</script>
+</body>
+</html>
