@@ -266,6 +266,36 @@ p.lead,.card p,.drow p,.sense p,.statement,.space p,.pillars p,#manifesto p,.aud
 .play{display:inline-flex;align-items:center;gap:12px;margin-top:30px;background:var(--laranja);color:var(--preto);text-decoration:none;font-weight:600;font-size:18px;padding:16px 26px;border-radius:99px;transition:transform .3s cubic-bezier(.2,.8,.2,1.4),box-shadow .3s}
 .play:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 30px rgba(255,120,0,.35)}
 .play span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--preto);color:var(--laranja);font-size:11px}
+.tone{margin-top:50px;border-top:1px solid var(--line)}
+.trow{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline;font-size:17px}
+.trow.th .mono{color:var(--muted)}.trow b{font-weight:600}.trow span:nth-child(2){color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(255,120,0,.6)}
+.trow span:nth-child(3){font-weight:600;color:var(--laranja)}.trow.th span{text-decoration:none!important;color:var(--muted)!important;font-weight:400!important}
+.moments{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:56px;border-top:2px solid var(--laranja)}
+.mo{padding:22px 18px 0 0;position:relative}.mo::before{content:"";position:absolute;top:-8px;left:0;width:14px;height:14px;border-radius:50%;background:var(--laranja)}
+.mo .mono{color:var(--laranja)}.mo p{margin-top:10px;font-size:17px;line-height:1.4}
+.concept{font-weight:600;font-size:clamp(34px,4.8vw,76px);line-height:1.04;letter-spacing:-.035em;max-width:1150px}
+.concept span{color:var(--branco)}
+.sign{margin-top:60px;background:var(--preto);color:var(--branco);border-radius:28px;padding:40px}
+.sign .mono{color:var(--laranja)}
+.tag{font-weight:600;font-size:clamp(36px,5vw,72px);letter-spacing:-.03em;margin:10px 0 30px}
+.sign-rows{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sign-rows div{border:1px solid rgba(252,252,252,.15);border-radius:18px;padding:20px}.sign-rows b{display:block;font-size:20px;margin-top:10px}.sign-rows small{display:block;color:rgba(252,252,252,.6);margin-top:6px;font-size:14px}
+.note{color:rgba(252,252,252,.6);margin-top:20px;line-height:1.5;font-size:15px}
+.channels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:50px}
+.channels .mono{color:var(--laranja)}.channels h3{margin:14px 0 8px;font-size:22px}
+.mocks{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-top:16px}
+.mock-col{display:grid;gap:16px}
+.mock{background:#fcfcfc;color:#0c0c0c;border-radius:22px;padding:26px;position:relative}
+.mock .lbl{display:block;color:#888;font-size:10px;margin-bottom:14px}
+.mock .bar{display:flex;gap:6px;margin-bottom:22px}.mock .bar i{width:10px;height:10px;border-radius:50%;background:#ddd}
+.mock h4{font-weight:600;font-size:26px;line-height:1.1;letter-spacing:-.02em}
+.mock p{margin-top:12px;line-height:1.5;color:#444;font-size:15px}
+.mock .cta{display:inline-block;margin-top:18px;background:#ff7800;color:#0c0c0c;font-weight:600;border-radius:99px;padding:12px 20px;font-size:14px}
+.mock .ident{margin-top:22px;padding-top:18px;border-top:1px solid #eee;color:#666;font-size:14px;line-height:1.5}
+.mock .who{display:flex;gap:10px;align-items:center}.mock .who img{width:40px;height:40px;border-radius:50%;background:#ffe3cc;object-fit:contain}.mock .who small{display:block;color:#888;font-size:12px}
+.mock .sig{font-weight:600;color:#0c0c0c}
+.mock.gads small{color:#555;font-size:12px}.mock.gads h4{color:#1a0dab;font-size:19px;font-weight:400;margin-top:6px}
+@media (max-width:820px){.moments{grid-template-columns:1fr 1fr;border-top:none}.mo{border-top:2px solid var(--laranja);padding-top:22px;margin-top:20px}.sign-rows,.channels,.mocks{grid-template-columns:1fr}.trow{grid-template-columns:1fr;gap:4px}.trow.th{display:none}.sign{padding:26px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -466,7 +496,7 @@ p.lead,.card p,.drow p,.sense p,.statement,.space p,.pillars p,#manifesto p,.aud
 <section class="chapter" id="cap1" data-theme="orange">
   <span class="num mono">Capítulo 01</span>
   <div class="big stretch">Apresentação</div>
-  <div class="sub mono"><span>História · Marca · Cores · Tipografia · Valores · Personalidade</span><span>↓</span></div>
+  <div class="sub mono"><span>História · Marca · Valores · Personalidade · Tom de voz</span><span>↓</span></div>
 </section>
 
 <section id="historia">
@@ -582,6 +612,90 @@ p.lead,.card p,.drow p,.sense p,.statement,.space p,.pillars p,#manifesto p,.aud
     <h2 class="rv">22 jeitos de ser<br>a <em class="o">mesma</em> Nexa.</h2>
     <p class="lead rv">Alerta, esforço, alívio e comemoração: cada expressão acompanha um momento da rotina de quem empreende.</p>
     <div class="bento" id="bento"></div>
+  </div>
+</section>
+
+<section id="tom" data-theme="light">
+  <div class="wrap">
+    <div class="kicker mono">1.9 · Tom de voz</div>
+    <h2 class="rv">Falar da rotina do gestor antes de <em class="o">falar do produto.</em></h2>
+    <p class="lead rv">Hoje a comunicação da Conexa é técnica e centrada no produto, com palavras que toda a categoria usa, como "automação", "integração" e "dashboard". Os clientes, porém, elogiam outra coisa: o alívio na rotina, a facilidade de uso e o suporte humano. O novo tom aproxima a marca do que eles já valorizam e faz o nome voltar a significar conexão com o dia a dia de quem vive de mensalidade.</p>
+    <div class="tone">
+      <div class="trow th rv"><span class="mono">Dimensão</span><span class="mono">Tom atual</span><span class="mono">Tom proposto</span></div>
+      <div class="trow rv"><b>Ponto de partida</b><span>Dor do gestor</span><span>Rotina do gestor</span></div>
+      <div class="trow rv"><b>Papel do produto</b><span>Solução imediata</span><span>Consequência e prova</span></div>
+      <div class="trow rv"><b>Vocabulário</b><span>Jargão genérico de SaaS</span><span>Vocabulário da recorrência: reajuste, inadimplência, 13º honorário, MRR, churn</span></div>
+      <div class="trow rv"><b>Momento de presença</b><span>Quando o gestor busca uma solução</span><span>Antes de o problema virar busca</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="momentos">
+  <div class="wrap">
+    <div class="kicker mono">1.10 · Momentos da rotina</div>
+    <h2 class="rv">A rotina de quem vive de mensalidade tem <em class="o">data marcada.</em></h2>
+    <p class="lead rv">São esses momentos que puxam a categoria para a cabeça do gestor. A Conexa precisa estar ligada a cada um deles para ser lembrada quando o problema aparecer.</p>
+    <div class="moments">
+      <div class="mo rv"><span class="mono">Dia 1</span><p>Emissão das mensalidades</p></div>
+      <div class="mo rv"><span class="mono">Dia 10</span><p>O vencimento e aquele olhar no extrato</p></div>
+      <div class="mo rv"><span class="mono">Janeiro</span><p>Reajuste anual de todos os contratos</p></div>
+      <div class="mo rv"><span class="mono">Dezembro</span><p>O 13º honorário</p></div>
+      <div class="mo rv"><span class="mono">A qualquer hora</span><p>O cancelamento de um cliente</p></div>
+      <div class="mo rv"><span class="mono">Um dia</span><p>A planilha que não dá mais conta</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="assinatura" data-theme="orange">
+  <div class="wrap">
+    <div class="kicker mono">1.11 · Frase-conceito e tagline</div>
+    <p class="concept rv">A gente sabe como é viver de mensalidade. <span>Por isso a Conexa cuida do ciclo inteiro, do contrato à nota fiscal.</span></p>
+    <p class="lead rv">A primeira frase cria identificação com a rotina do gestor. A segunda apresenta o produto como consequência.</p>
+    <div class="sign rv">
+      <span class="mono">Tagline</span>
+      <p class="tag">Conexa. Todo mês, com você.</p>
+      <div class="sign-rows">
+        <div><span class="mono">Assinatura principal</span><b>Conexa Recorrência · Todo mês, com você.</b></div>
+        <div><span class="mono">Site e materiais institucionais</span><b>Conexa. Todo mês, com você.</b><small>Gestão de receita recorrente, do contrato à nota fiscal.</small></div>
+      </div>
+      <p class="note">"Todo mês" faz referência à recorrência. Como a tagline é emocional, ela sempre aparece com um descritor do território, o que também separa a marca da Conexa Saúde.</p>
+    </div>
+  </div>
+</section>
+
+<section id="aplicacoes-voz">
+  <div class="wrap">
+    <div class="kicker mono">1.12 · O tom na prática</div>
+    <h2 class="rv">Cada canal com um <em class="o">peso diferente.</em></h2>
+    <div class="channels">
+      <div class="card rv"><span class="mono">Redes sociais</span><h3>Conexão com a rotina</h3><p>"Você não abriu um coworking para virar cobrador."</p></div>
+      <div class="card rv"><span class="mono">Blog e SEO</span><h3>Especialização em recorrência</h3><p>Conteúdo sobre reajuste, inadimplência, churn e 13º honorário.</p></div>
+      <div class="card rv"><span class="mono">Site e comercial</span><h3>Produto como prova</h3><p>"O dia 10 continua chegando. Só não precisa mais ser o pior dia do mês."</p></div>
+    </div>
+    <div class="mocks">
+      <div class="mock lp rv">
+        <span class="mono lbl">Landing page</span>
+        <div class="bar"><i></i><i></i><i></i></div>
+        <h4>A gente sabe como é viver de mensalidade.</h4>
+        <p>Por isso a Conexa cuida do ciclo inteiro, do contrato à nota fiscal. Reajuste em lote, cobrança que tenta de novo sozinha e caixa previsível, para você crescer sem aumentar a equipe.</p>
+        <span class="cta">Fale com um especialista em recorrência</span>
+        <div class="ident">Dia 1: mensalidades para emitir. Dia 10: aquele olhar no extrato. Janeiro: 200 contratos para reajustar. Se isso faz parte da sua rotina, a Conexa foi feita para você.</div>
+      </div>
+      <div class="mock-col">
+        <div class="mock ad rv">
+          <span class="mono lbl">Anúncio · LinkedIn e Meta</span>
+          <div class="who"><img src="assets/n13_sorriso_empolgado.webp" alt=""><div><b>Conexa Recorrência</b><small>Patrocinado</small></div></div>
+          <p>Dia 10 de novo? Extrato aberto, planilha do lado, cliente atrasado... A gente sabe como é viver de mensalidade. Por isso a Conexa cuida do ciclo inteiro, do contrato à nota fiscal.</p>
+          <p class="sig">Conexa Recorrência · Todo mês, com você.</p>
+        </div>
+        <div class="mock gads rv">
+          <span class="mono lbl">Google Ads</span>
+          <small>Patrocinado · conexa.app</small>
+          <h4>Conexa Recorrência | Do Contrato à Nota Fiscal | Todo Mês, com Você</h4>
+          <p>A gente sabe como é viver de mensalidade. Por isso a Conexa cuida do ciclo inteiro: cobrança, reajuste e nota fiscal.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -762,7 +876,7 @@ const NX=[["01_frontal","Frontal","w2 h2"],["17_acenando_com_a_mao_direita","Ace
 $('#bento').innerHTML=NX.map((x,i)=>`<figure class="rv ${x[2]}"><img loading="lazy" src="assets/n${x[0]}.webp" alt="Nexa ${x[1]}"><figcaption>${String(i+1).padStart(2,'0')} · ${x[1]}</figcaption></figure>`).join('');
 
 // companion poses per section
-const POSE={sumario:["17_acenando_com_a_mao_direita","Oi! Eu sou a Nexa. Vou te guiar por aqui."],cap1:["21_apontando_para_frente_animada","Primeiro: quem é a Conexa."],historia:["13_sorriso_empolgado","Dez anos e mais de 2.500 clientes!"],marca:["21_apontando_para_frente_animada","Olha eu aí no símbolo!"],cores:["13_sorriso_empolgado","Clica numa cor pra copiar."],tipografia:["12_pensativa",""],valores:["15_em_pe_de_frente",""],essencia:["10_surpresa","5 de 6 cliques vão para outra empresa?!"],nexa:null,galeria:["22_dancando","Escolhe a sua favorita."],cap2:["18_pulando","O que só a gente faz."],diferenciais:["12_pensativa","Aqui quem atende entende de recorrência."],concorrencia:["08_cabeca_inclinada","Esse degrau aí embaixo está livre…"],cap3:["21_apontando_para_frente_animada","Para quem a gente existe."],publico:["06_olhando_levemente_para_cima",""],cap4:["19_sentada_de_pernas_cruzadas",""],posicionamento:["12_pensativa","Especialista em uma coisa só: recorrência."],cap5:["11_cantando",""],proposito:null,cap6:["09_gargalhando_de_boca_aberta","Agora é hora de jogar comigo!"],ativacao:null,sentidos:["13_sorriso_empolgado","Café é meu booster ☕"],espaco:["17_acenando_com_a_mao_direita","Te vejo no stand!"]};
+const POSE={sumario:["17_acenando_com_a_mao_direita","Oi! Eu sou a Nexa. Vou te guiar por aqui."],cap1:["21_apontando_para_frente_animada","Primeiro: quem é a Conexa."],historia:["13_sorriso_empolgado","Dez anos e mais de 2.500 clientes!"],marca:["21_apontando_para_frente_animada","Olha eu aí no símbolo!"],cores:["13_sorriso_empolgado","Clica numa cor pra copiar."],tipografia:["12_pensativa",""],valores:["15_em_pe_de_frente",""],essencia:["10_surpresa","5 de 6 cliques vão para outra empresa?!"],nexa:null,galeria:["22_dancando","Escolhe a sua favorita."],tom:["12_pensativa","Menos jargão, mais rotina."],momentos:["14_sonolenta","Dia 10 de novo?"],assinatura:null,"aplicacoes-voz":["17_acenando_com_a_mao_direita","Todo mês, com você."],cap2:["18_pulando","O que só a gente faz."],diferenciais:["12_pensativa","Aqui quem atende entende de recorrência."],concorrencia:["08_cabeca_inclinada","Esse degrau aí embaixo está livre…"],cap3:["21_apontando_para_frente_animada","Para quem a gente existe."],publico:["06_olhando_levemente_para_cima",""],cap4:["19_sentada_de_pernas_cruzadas",""],posicionamento:["12_pensativa","Especialista em uma coisa só: recorrência."],cap5:["11_cantando",""],proposito:null,cap6:["09_gargalhando_de_boca_aberta","Agora é hora de jogar comigo!"],ativacao:null,sentidos:["13_sorriso_empolgado","Café é meu booster ☕"],espaco:["17_acenando_com_a_mao_direita","Te vejo no stand!"]};
 const comp=$('#companion'),cimg=$('#cimg'),bub=$('#bubble');let cur='',bt;
 function setPose(id){const p=POSE[id];if(p===undefined)return;if(p===null){comp.classList.remove('on');cur=id;return}comp.classList.add('on');if(cur===id)return;cur=id;cimg.classList.add('swap');setTimeout(()=>{cimg.src='assets/n'+p[0]+'.webp';cimg.classList.remove('swap')},180);clearTimeout(bt);comp.classList.remove('talk');if(p[1]){setTimeout(()=>{bub.textContent=p[1];comp.classList.add('talk')},400);bt=setTimeout(()=>comp.classList.remove('talk'),4200)}}
 
